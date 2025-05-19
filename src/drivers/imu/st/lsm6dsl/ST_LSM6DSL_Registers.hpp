@@ -51,6 +51,10 @@ static constexpr uint8_t Bit4 = (1 << 4);
 static constexpr uint8_t Bit5 = (1 << 5);
 static constexpr uint8_t Bit6 = (1 << 6);
 static constexpr uint8_t Bit7 = (1 << 7);
+static constexpr uint16_t Bit8 = (1 << 8);
+static constexpr uint16_t Bit9 = (1 << 9);
+static constexpr uint16_t Bit10 = (1 << 10);
+
 
 namespace ST_LSM6DSL
 {
@@ -59,15 +63,16 @@ static constexpr uint32_t SPI_SPEED = 10 * 1000 * 1000; // 10 MHz SPI clock freq
 static constexpr uint8_t DIR_READ = 0x80;
 
 static constexpr uint8_t WHO_AM_I_ID = 0b01101010; // Who I am ID
-//static constexpr uint8_t WHO_AM_I_ID = 0b01101000; // Who I am ID
 
-static constexpr uint32_t LA_ODR = 6664; // Linear acceleration output data rate
-static constexpr uint32_t G_ODR  = 6664; // Angular rate output data rate
+//static constexpr uint32_t LA_ODR = 6666; // Linear acceleration output data rate
+//static constexpr uint32_t G_ODR  = 6666; // Angular rate output data rate
+static constexpr uint32_t LA_ODR = 104; // Linear acceleration output data rate
+static constexpr uint32_t G_ODR  = 104; // Angular rate output data rate
 
 enum class Register : uint8_t {
 	WHO_AM_I        = 0x0F, /* Who_AM_I register (r). This register is a read-only register. */
 
-        CTRL1_XL        = 0x10,	// Linear accel sensor Control Register 1.
+    CTRL1_XL        = 0x10,	// Linear accel sensor Control Register 1.
 	CTRL2_G         = 0x11, // Angular rate sensor Control Register 2.
 
 	OUT_TEMP_L      = 0x20, /* Temperature data output register (r). */
@@ -82,7 +87,7 @@ enum class Register : uint8_t {
 	OUT_Z_L_G       = 0x26, /* Angular rate sensor roll axis (Z) angular rate output register (r). */
 	OUT_Z_H_G       = 0x27, /* Angular rate sensor roll axis (Z) angular rate output register (r). */
 
-        OUT_X_L_XL      = 0x28, /* Linear acceleration sensor X-axis output register (r). */
+    OUT_X_L_XL      = 0x28, /* Linear acceleration sensor X-axis output register (r). */
 	OUT_X_H_XL      = 0x29, /* Linear acceleration sensor X-axis output register (r). */
 	OUT_Y_L_XL      = 0x2A, /* Linear acceleration sensor Y-axis output register (r). */
 	OUT_Y_H_XL      = 0x2B, /* Linear acceleration sensor Y-axis output register (r). */
@@ -97,29 +102,14 @@ enum class Register : uint8_t {
 	CTRL7_G         = 0x16, // Angular rate Sensor Control register 7.
 	CTRL8_XL        = 0x17, // Linear acceleration sensor control register 8
 	CTRL9_XL        = 0x18, // Linear acceleration sensor control register 9 
-	CTRL10_C       = 0x19, // Control register 10 (r/w) 
+	CTRL10_C        = 0x19, // Control register 10 (r/w) 
 
-
-
-        /* Not found the detail in nuttx folder or datasheet but avialable in lsm9d
-            SHALL BE DELETED LATER
-        */
-
-	//CTRL_REG6_XL    = 0x20, // Linear acceleration sensor Control Register 6.
-	//CTRL_REG7_XL    = 0x21, // Linear acceleration sensor Control Register 7.
-	//CTRL_REG8       = 0x22, // Control register 8.
-	//CTRL_REG9       = 0x23, // Control register 9.
-
-	//STATUS_REG_A    = 0x27,
-        /* Not found the detail but avialable in lsm9d
-        */
 	
-	
-        FIFO_CTRL1      = 0x06, // FIFO control register.// FIFO threshold
-        FIFO_CTRL2      = 0x07, // FIFO control register.// to reset FIFO in Bypass mode
-        FIFO_CTRL3      = 0x08, // FIFO control register.// data store rate = data decimated rate available decimation factors are 2, 3, 4, 8, 16, 32 
-        FIFO_CTRL4      = 0x09, // FIFO control register.// data store rate
-        FIFO_CTRL5      = 0x0A, // FIFO control register.
+    FIFO_CTRL1      = 0x06, // FIFO control register.// FIFO threshold
+    FIFO_CTRL2      = 0x07, // FIFO control register.// to reset FIFO in Bypass mode
+    FIFO_CTRL3      = 0x08, // FIFO control register.// data store rate = data decimated rate available decimation factors are 2, 3, 4, 8, 16, 32 
+    FIFO_CTRL4      = 0x09, // FIFO control register.// data store rate
+    FIFO_CTRL5      = 0x0A, // FIFO control register.
 	FIFO_STATUS1    = 0x3A, // FIFO status control register - FIFO overrun events.
 	FIFO_STATUS2    = 0x3B, // FIFO status control register - FIFO Full Status
 	FIFO_STATUS3    = 0x3C, // FIFO status control register - FIFO empty status
@@ -129,22 +119,15 @@ enum class Register : uint8_t {
 // CTRL_REG1_G
 
 enum CTRL2_G_BIT : uint8_t {
-        //ODR_G [3:0]
-	ODR_G_6660HZ  = Bit7 | Bit5, // 6660 Hz ODR
+    //ODR_G [3:0]
+	ODR_G_6660HZ  = Bit7 | Bit5, // 6660 Hz ODR with G_HM_MODE=0 which means high performance mode isvalid for all the mode
+	ODR_G_104HZ  = Bit6, // 6660 Hz ODR with G_HM_MODE=0 which means high performance mode isvalid for all the mode
 	// FS_G [1:0]
-	FS_G_2000DPS = Bit3 | Bit2,
-        FS_125 = Bit1, //At Bit1 Full Scale at 125dps
+	FS_G_2000DPS  = Bit3 | Bit2, // 2000dps pg 61 DS
+	// FS_125 [0:0]
+	FS_125_125DPS = Bit1 , // 125dps pg 61 DS
 };
-//enum CTRL1_REG1_G_BIT : uint8_t {
-//	// ODR_G [2:0]
-//	ODR_G_952HZ  = Bit7 | Bit6, // 952 Hz ODR
-//	// FS_G [1:0]
-//	FS_G_2000DPS = Bit4 | Bit3,
-//	// BW_G [1:0]
-//	BW_G_100Hz   = Bit1 | Bit0, // BW_G 100 Hz
-//};
 
-// STATUS_REG ()
 enum STATUS_REG_BIT : uint8_t {
 	TDA  = Bit2, // Temperature sensor new data available.
 	GDA  = Bit1, // Gyroscope new data available.
@@ -153,44 +136,55 @@ enum STATUS_REG_BIT : uint8_t {
 
 // CTRL_REG6_XL
 enum CTRL1_XL_BIT : uint8_t {
-        // ODR_XL [3:0]
-	ODR_XL_6660HZ  = Bit7 | Bit5, // 6660 Hz ODR
-        //FS_XL [1:0]
-	FS_XL = Bit3, // FS_XL 01: _16 g
-        LPF1_BW_SEL = Bit1,
+    // ODR_XL [3:0]
+	ODR_XL_6660HZ  = Bit7 | Bit5, // 6660 Hz ODR with XL_HM_MODE=0 which means high performance mode isvalid for all the mode
+	ODR_XL_3330HZ  = Bit7 | Bit4, // 6660 Hz ODR with XL_HM_MODE=0 which means high performance mode isvalid for all the mode
+	ODR_XL_104HZ  = Bit6 , // 6660 Hz ODR with XL_HM_MODE=0 which means high performance mode isvalid for all the mode
+    //FS_XL [1:0]
+	FS_XL = Bit2, // FS_XL 01: _16 g
 	BW0_XL_400Hz   = Bit0, // BW0_XL 400 Hz
 };
-
-//enum CTRL_REG6_XL_BIT : uint8_t {
-//	// ODR_XL [2:0]
-//	ODR_XL_952HZ = Bit7 | Bit6, // 952 Hz ODR
-//	// FS_XL [1:0]
-//	FS_XL_16     = Bit3,        // FS_XL 01: ±16 g
-//};
-
-// CTRL_REG7_XL
-//enum CTRL_REG7_XL_BIT : uint8_t {
-//	HR  = Bit7, // High resolution mode for accelerometer enable.
-//	FDS = Bit2, // Filtered data selection. 0: internal filter bypassed
-//};
 
 // CTRL3_C
 enum CTRL3_C_BIT : uint8_t {
 	BDU        = Bit6, // Block data update Default value: 0 (0: continuous update; 1: output registers not updated until MSB and LSB have been read)
-
 	IF_ADD_INC = Bit2, // Register address automatically incremented Default value: 1 (0: disabled; 1: enabled
-
 	SW_RESET   = Bit0, // Software reset Default value: 0  0: normal mode; 1: reset device
 };
 
 // CTRL4_C
 enum CTRL4_C_BIT : uint8_t {
-	I2C_DISABLE = Bit2, // Default value: 0 0: both I2C and SPI enabled; 1: I2C disabled, SPI only enabled
+	I2C_DISABLE = Bit2, // 
+    LPF1_SEL_G  = Bit1,// Enable gyro digit LPF1 Pg 63 DS
+};
+
+// CTRL6_C
+enum CTRL6_C_BIT : uint8_t {
+	FTYPE = Bit0, // Gyro LPF1 set to 33 Hz at ODR 104 Khz Pg 65 DS
+	//FTYPE = Bit1 | Bit0, // Gyro LPF1 set to 937 Hz at ODR 6.6 Khz Pg 65 DS
+	//FTYPE = Bit1 | Bit0, // Gyro LPF1 set to 925 Hz at ODR 3.3 Khz Pg 65 DS
+};
+
+// CTRL7_C
+enum CTRL7_G_BIT : uint8_t {
+	HP_EN_G = Bit6, //Enabling High Pass Filter Pg 66 DS 
+	//HPM_G = Bit5 | Bit4, //Setting Cutoff to 1.04 Hz Pg 66 DS
+	HPM_G = Bit4, //Setting Cutoff to 65mHz Pg 66 DS
 };
 
 // FIFO_CTRL
+
+enum FIFO_CTRL3_BIT : uint8_t {
+	// FMODE [2:0]
+	DEC_FIFO_XL = Bit0, // No decimation pg 55 DS 
+	DEC_FIFO_G  = Bit3, // No decimation Pg 55 DS
+};
+
 enum FIFO_CTRL5_BIT : uint8_t {
 	// FMODE [2:0]
+	FIFO_ODR_416Hz = Bit4 | Bit5, //FIFO ODR 6664 Hz Pg 57 DS
+	FIFO_ODR_6666Hz = Bit6 | Bit4, //FIFO ODR 6664 Hz Pg 57 DS
+	FIFO_ODR_3333Hz = Bit6 | Bit3, //FIFO ODR 3333 Hz Pg 57 DS
 	FMODE_CONTINUOUS = Bit2 | Bit1, // Continuous mode. If the FIFO is full, the new sample over- writes the older sample.
 };
 
@@ -200,10 +194,18 @@ enum FIFO_STATUS2_BIT : uint8_t {
 	DIFF_FIFO  = Bit2 | Bit1 | Bit0,
 };
 
+enum FIFO_STATUS1_BIT : uint8_t {
+	DIFF_FIFO1  = Bit7 | Bit6 | Bit5 | Bit4 | Bit3 | Bit2 | Bit1 | Bit0,
+};
 
 namespace FIFO
 {
-static constexpr size_t SIZE = 32 * 12; // 32 samples max
+//static constexpr size_t SIZE = 32 * 12; // 32 samples max
+//static constexpr size_t SIZE = 512 * 12; // 32 samples max
+//static constexpr size_t SIZE = 4096; // 4096 samples max
+//static constexpr size_t SIZE = 2047 * 12; // pg 80 of an5040-lsm6dsl doc
+static constexpr size_t SIZE = 2046 * 12; // pg 83 of an5040-lsm6dsl doc
+//static constexpr size_t SIZE = 4096 * 12; // 4096 samples max
 }
 
 } // namespace ST_LSM6DSL
