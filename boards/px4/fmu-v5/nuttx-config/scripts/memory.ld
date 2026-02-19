@@ -72,12 +72,15 @@ MEMORY
 {
   /* ITCM boot address */
 
-  itcm  (rwx) : ORIGIN = 0x00208000, LENGTH = 2048K-32K
+  /*itcm  (rwx) : ORIGIN = 0x00208000, LENGTH = 2048K-32K*/
+  itcm  (rw) : ORIGIN = 0x00208000, LENGTH = 2048K-32K
 
   /* 2048KB FLASH, bootloader reserves the first 32kb */
 
-  kflash (rx) : ORIGIN = 0x08008000, LENGTH = 1024K-32K
-  uflash (rx) : ORIGIN = 0x08100000, LENGTH = 1024K
+  /*kflash (rx) : ORIGIN = 0x08008000, LENGTH = 1024K-32K*/
+  kflash (rx) : ORIGIN = 0x08040200, LENGTH = 0X1BFE00
+  /*uflash (rx) : ORIGIN = 0x08100000, LENGTH = 1024K */
+  uflash (rx) : ORIGIN = 0x00000000, LENGTH = 0 
 
   /* ITCM RAM */
 
