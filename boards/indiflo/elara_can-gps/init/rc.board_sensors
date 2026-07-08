@@ -1,0 +1,19 @@
+#/bin/sh
+#
+# board sensors init
+#------------------------------------------------------------------------------
+echo "Starting the GPS module"
+gps start -d /dev/ttyS0 -p ubx
+
+
+#icm42688p -R 0 -s start
+
+#bmp388 -I -b 2 start
+echo "Starting the Barometer module"
+#dps310 -I  start
+dps310 -I -b 2 start
+#dps310 -I  start
+
+#bmm150 -I -b 1 start
+echo "Starting the Magnetometer module"
+rm3100 -s -b 1 -R 4 start
