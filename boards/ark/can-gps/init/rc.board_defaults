@@ -3,9 +3,13 @@
 # board specific defaults
 #------------------------------------------------------------------------------
 
+echo "Inside the rcboard sensor "
 param set-default CBRK_IO_SAFETY 0
 param set-default MBE_ENABLE 1
-param set-default SENS_IMU_CLPNOTI 0
+#param set-default SENS_IMU_CLPNOTI 0
 
+
+rgbled_pwm start
 safety_button start
-tone_alarm start
+#tone_alarm start
+echo "Going Out the rcboard sensor "

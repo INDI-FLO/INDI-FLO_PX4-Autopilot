@@ -119,6 +119,13 @@ int can_devinit(void)
 			return ret;
 		}
 
+
+//                /* initial LED state */
+//                drv_led_start();
+//                led_off(LED_RED);
+//                led_on(LED_GREEN); // Indicate Power.
+//                led_off(LED_BLUE);
+
 		/* Now we are initialized */
 
 		initialized = true;

@@ -1,10 +1,10 @@
 {
     "board_id": 81,
     "magic": "PX4FWv1",
-    "description": "Firmware for the ARK gps board",
+    "description": "Firmware for the IndiFlo gps board",
     "image": "",
     "build_time": 0,
-    "summary": "ARKGPS",
+    "summary": "INDIFLOCANGPS",
     "version": "0.1",
     "image_size": 0,
     "image_maxsize": 2080768,
