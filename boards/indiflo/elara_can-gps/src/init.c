@@ -73,6 +73,11 @@
 #  include <parameters/flashparams/flashfs.h>
 #endif
 
+#define TMR_BASE        STM32_TIM1_BASE
+#define TMR_FREQUENCY   STM32_APB2_TIM1_CLKIN
+#define TMR_REG(o)      (TMR_BASE+(o))
+
+
 /************************************************************************************
  * Name: stm32_boardinitialize
  *
@@ -87,6 +92,10 @@ __EXPORT void stm32_boardinitialize(void)
 {
 	watchdog_init();
 
+        /* configure LEDs */
+
+        board_autoled_initialize();
+
 	/* configure pins */
 	const uint32_t gpio[] = PX4_GPIO_INIT_LIST;
 	px4_gpio_init(gpio, arraySize(gpio));
@@ -94,10 +103,12 @@ __EXPORT void stm32_boardinitialize(void)
 	// Configure SPI all interfaces GPIO & enable power.
 	stm32_spiinitialize();
 
+	//rgb_led(128, 128, 128, 10);
+
 	// Check if button is held. If so go into gps passthrough mode
 	if (stm32_gpioread(GPIO_BTN_SAFETY)) {
-		//rgb_led(128, 128, 128, 10);
-		rgb_led(128, 0, 0, 2);
+		rgb_led(128, 128, 128, 10);
+		//rgb_led(128, 0, 0, 2);
 		stm32_configgpio(GPIO_USART1_TX_GPIO);
 		stm32_configgpio(GPIO_USART1_RX_GPIO);
 		stm32_configgpio(GPIO_USART2_TX_GPIO);
@@ -140,6 +151,33 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	px4_platform_init();
 
+        //uint16_t cr1  = getreg16(TMR_REG(STM32_BTIM_CR1_OFFSET));
+        //uint16_t ccer = getreg16(TMR_REG(STM32_GTIM_CCER_OFFSET));
+        //uint16_t bdtr = getreg16(TMR_REG(STM32_ATIM_BDTR_OFFSET));
+
+        //uint16_t ccr1 = getreg16(TMR_REG(STM32_GTIM_CCR1_OFFSET));
+        //uint16_t ccr2 = getreg16(TMR_REG(STM32_GTIM_CCR2_OFFSET));
+        //uint16_t ccr3 = getreg16(TMR_REG(STM32_GTIM_CCR3_OFFSET));
+
+        //uint16_t arr  = getreg16(TMR_REG(STM32_BTIM_ARR_OFFSET));
+        //uint16_t psc  = getreg16(TMR_REG(STM32_BTIM_PSC_OFFSET));
+	//	
+        //syslog(LOG_INFO, "[boot] CR1=0x%04X\n", cr1);
+        //syslog(LOG_INFO, "[boot] ccer=0x%04X\n", ccer);
+        //syslog(LOG_INFO, "[boot] bdtr=0x%04X\n", bdtr);
+        //syslog(LOG_INFO, "[boot] srr=0x%04X\n", arr);
+        //syslog(LOG_INFO, "[boot] psc=0x%04X\n", psc);
+        //syslog(LOG_INFO, "[boot] CR1=0x%04X\n", ccr1);
+        //syslog(LOG_INFO, "[boot] CR2=0x%04X\n", ccr2);
+        //syslog(LOG_INFO, "[boot] CR3=0x%04X\n", ccr3);
+
+        //printf("Disabling TIM1...\n");
+
+        //modifyreg16(TMR_REG(STM32_BTIM_CR1_OFFSET), ATIM_CR1_CEN, 0); // this stopped blinking 
+        //modifyreg16(TMR_REG(STM32_ATIM_BDTR_OFFSET), ATIM_BDTR_MOE, 0);
+
+	//rgb_led(128, 128, 128, 10);
+
 #if defined(FLASH_BASED_PARAMS)
 	static sector_descriptor_t params_sector_map[] = {
 		{2, 16 * 1024, 0x08008000},
@@ -159,5 +197,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	/* Configure the HW based on the manifest */
 	//px4_platform_configure();
 
+        rgb_led(0, 255, 0, 0);
 	return OK;
 }

@@ -47,12 +47,17 @@
 
 #include <nuttx/board.h>
 #include <arch/board/board.h>
+#include <drivers/drv_pwm_output.h>
 
 #include "led.h"
 
 #define TMR_BASE        STM32_TIM1_BASE
 #define TMR_FREQUENCY   STM32_APB2_TIM1_CLKIN
 #define TMR_REG(o)      (TMR_BASE+(o))
+//#define LED_PWM_FREQ        1000000
+
+//extern int led_pwm_servo_set(unsigned channel, uint8_t  value);
+//extern int led_pwm_servo_init(void);
 
 void rgb_led(int r, int g, int b, int freqs)
 {
@@ -99,6 +104,7 @@ void rgb_led(int r, int g, int b, int freqs)
 
 		/* master output enable = on */
 		putreg16(ATIM_BDTR_MOE, (TMR_REG(STM32_ATIM_BDTR_OFFSET)));
+                //led_pwm_servo_init();
 	}
 
 	long p  = freqs == 0 ? p1s : p1s / freqs;

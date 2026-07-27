@@ -124,7 +124,8 @@
 
 __BEGIN_DECLS
 
-//#define BOARD_HAS_RGB_PWM 1
+#define BOARD_HAS_RGB_PWM 1
+#define BOARD_HAS_LED_PWM 1
 #define BOARD_HAS_N_S_RGB_LED       1
 #define BOARD_MAX_LEDS              BOARD_HAS_N_S_RGB_LED
 

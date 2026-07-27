@@ -803,6 +803,7 @@ static flash_error_t file_read_and_program(const uavcan_Path_t *fw_path, uint8_t
 					retries--;
 
 					board_indicate(fw_update_invalid_response);
+                                        printf("\n fw_update_invalid_repose\n") ;
 
 					uavcan_tx_log_message(LOGMESSAGE_LEVELERROR,
 							      LOGMESSAGE_STAGE_PROGRAM,
@@ -814,6 +815,7 @@ static flash_error_t file_read_and_program(const uavcan_Path_t *fw_path, uint8_t
 		/* Exhausted retries */
 		if (uavcan_status != UavcanOk) {
 			board_indicate(fw_update_timeout);
+                        printf("\n fw_update_timeout\n") ;
 			break;
 		}
 
@@ -942,6 +944,7 @@ static void application_run(size_t fw_image_size, bootloader_app_shared_t *commo
 
 		/* and set a specific LED pattern */
 		board_indicate(jump_to_app);
+		//board_indicate(off);
 
 		/* Update the shared memory and make it valid to tell the
 		 * App are node ID and Can bit rate.

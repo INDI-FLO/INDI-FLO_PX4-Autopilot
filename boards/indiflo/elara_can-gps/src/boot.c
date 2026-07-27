@@ -175,7 +175,9 @@ static const  led_t i2l[] = {
 	led(8, fw_update_invalid_response,     64,     0,     0,     1),
 	led(9, fw_update_timeout,              64,     0,     0,     2),
 	led(a, fw_update_invalid_crc,          64,     0,     0,     4),
-	led(b, jump_to_app,                     0,   128,     0,    10),
+        //led(b, jump_to_app,                   0,   128,     0,    10), // greenish Blink
+	//led(b, jump_to_app,                    128,   0,     0,    10), // reddish blink
+	led(b, jump_to_app,                    0,   0,     128,    10), // blueish blink
 
 };
 
