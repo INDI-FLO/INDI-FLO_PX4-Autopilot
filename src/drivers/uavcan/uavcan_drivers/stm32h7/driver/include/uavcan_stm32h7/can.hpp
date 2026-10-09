@@ -236,6 +236,14 @@ public:
  * CAN driver, incorporates all available CAN ifaces.
  * Please avoid direct use, prefer @ref CanInitHelper instead.
  */
+
+/*#ifndef UAVCAN_STM32H7_IFACE0_INDEX
+#define UAVCAN_STM32H7_IFACE0_INDEX 0
+#endif
+
+#define UAVCAN_STM32H7_IFACE0_INDEX 1
+*/
+
 class CanDriver : public uavcan::ICanDriver, uavcan::Noncopyable
 {
 	BusEvent update_event_;
@@ -257,6 +265,8 @@ public:
 	CanDriver(CanRxItem(&rx_queue_storage)[UAVCAN_STM32H7_NUM_IFACES][RxQueueCapacity])
 		: update_event_(*this)
 		, if0_(fdcan::Can[0], update_event_, 0, rx_queue_storage[0], RxQueueCapacity)
+		//, if0_(fdcan::Can[UAVCAN_STM32H7_IFACE0_INDEX], update_event_, 0, rx_queue_storage[0], RxQueueCapacity)
+		//, if0_(fdcan::Can[1], update_event_, 0, rx_queue_storage[0], RxQueueCapacity)
 #if UAVCAN_STM32H7_NUM_IFACES > 1
 		, if1_(fdcan::Can[1], update_event_, 1, rx_queue_storage[1], RxQueueCapacity)
 		, num_ifaces_(2)

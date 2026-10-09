@@ -50,13 +50,37 @@ constexpr uint32_t T1_MM_Pos = 24;
 /**
  * CANx register sets
  */
+#ifndef UAVCAN_STM32H7_IFACE0_FDCAN2
+# define UAVCAN_STM32H7_IFACE0_FDCAN2 0
+#endif
+
+#if UAVCAN_STM32H7_NUM_IFACES == 1
+
 CanType *const Can[UAVCAN_STM32H7_NUM_IFACES] = {
+#if UAVCAN_STM32H7_IFACE0_FDCAN2
+    reinterpret_cast<CanType *>(FDCAN2_BASE)
+#else
+    reinterpret_cast<CanType *>(FDCAN1_BASE)
+#endif
+};
+
+#else
+CanType *const Can[UAVCAN_STM32H7_NUM_IFACES] = {
+    reinterpret_cast<CanType *>(FDCAN1_BASE),
+    reinterpret_cast<CanType *>(FDCAN2_BASE)
+};
+
+#endif
+
+//Original Code
+/*CanType *const Can[UAVCAN_STM32H7_NUM_IFACES] = {
 	reinterpret_cast<CanType *>(FDCAN1_BASE)
 #if UAVCAN_STM32H7_NUM_IFACES > 1
 	,
 	reinterpret_cast<CanType *>(FDCAN2_BASE)
 #endif
-};
+};*/
+
 }
 }
 

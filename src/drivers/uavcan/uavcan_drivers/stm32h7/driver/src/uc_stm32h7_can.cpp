@@ -1126,6 +1126,14 @@ uavcan::int16_t CanDriver::select(uavcan::CanSelectMasks &inout_masks,
 }
 
 
+#if UAVCAN_STM32H7_IFACE0_FDCAN2
+# define UAVCAN_IFACE0_IRQ0 STM32_IRQ_FDCAN2_0
+# define UAVCAN_IFACE0_IRQ1 STM32_IRQ_FDCAN2_1
+#else
+# define UAVCAN_IFACE0_IRQ0 STM32_IRQ_FDCAN1_0
+# define UAVCAN_IFACE0_IRQ1 STM32_IRQ_FDCAN1_1
+#endif
+
 void CanDriver::initOnce()
 {
 	/*
@@ -1155,8 +1163,13 @@ void CanDriver::initOnce()
 		assert(res >= 0);                                  \
 		up_enable_irq(irq);                                \
 	}
-	IRQ_ATTACH(STM32_IRQ_FDCAN1_0, can1_irq);
-	IRQ_ATTACH(STM32_IRQ_FDCAN1_1, can1_irq);
+
+        IRQ_ATTACH(UAVCAN_IFACE0_IRQ0, can1_irq);
+        IRQ_ATTACH(UAVCAN_IFACE0_IRQ1, can1_irq);
+
+	//IRQ_ATTACH(STM32_IRQ_FDCAN1_0, can1_irq);
+	//IRQ_ATTACH(STM32_IRQ_FDCAN1_1, can1_irq);
+
 # if UAVCAN_STM32H7_NUM_IFACES > 1
 	IRQ_ATTACH(STM32_IRQ_FDCAN2_0, can2_irq);
 	IRQ_ATTACH(STM32_IRQ_FDCAN2_1, can2_irq);
@@ -1258,6 +1271,22 @@ extern "C"
 
 	static int can1_irq(const int irq, void *, void *)
 	{
+		if ( irq == UAVCAN_IFACE0_IRQ0) {
+			uavcan_stm32h7::handleRxInterrupt(0);
+
+		} else if (irq == UAVCAN_IFACE0_IRQ1) {
+			uavcan_stm32h7::handleTxInterrupt(0);
+
+		} else {
+			PANIC();
+		}
+
+		return 0;
+
+
+
+
+            /*  Original Code    
 		if (irq == STM32_IRQ_FDCAN1_0) {
 			// We've put only Rx interrupts on Line 0
 			uavcan_stm32h7::handleRxInterrupt(0);
@@ -1271,6 +1300,7 @@ extern "C"
 		}
 
 		return 0;
+            */    
 	}
 
 # if UAVCAN_STM32H7_NUM_IFACES > 1
