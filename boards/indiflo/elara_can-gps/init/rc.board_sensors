@@ -21,4 +21,4 @@ bmp581  -I -b 2 start
 echo "Starting the Magnetometer module"
 # Latest RM3100 having the orientation same as FCU x, y and z after flipping the board while installing it drone to make the patch antenna upside so No rotation
 rm3100 -I -b 1 start
-#rm3100 -s -b 1 -R 4 start
+#rm3100 -I -b 1 -R 12 start

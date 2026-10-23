@@ -195,12 +195,15 @@ void RM3100::RunImpl()
 		perf_count(_range_error_perf);
 		return;
 	}
+                yraw = -yraw ;
 
 	// only publish changes
 	if (_raw_data_prev[0] != xraw || _raw_data_prev[1] != yraw || _raw_data_prev[2] != zraw) {
 
 		_px4_mag.set_error_count(perf_event_count(_bad_transfer_perf)
 					 + perf_event_count(_range_error_perf));
+
+                //zraw = -zraw ;
 
 		_px4_mag.update(timestamp_sample, xraw, yraw, zraw);
 
