@@ -195,7 +195,9 @@ void RM3100::RunImpl()
 		perf_count(_range_error_perf);
 		return;
 	}
+                xraw = -xraw ;
                 yraw = -yraw ;
+                zraw = -zraw ;
 
 	// only publish changes
 	if (_raw_data_prev[0] != xraw || _raw_data_prev[1] != yraw || _raw_data_prev[2] != zraw) {
